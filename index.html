@@ -22,7 +22,9 @@
 .evento-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: flex-start;
+  max-height: calc(100vh - 200px); /* Definindo a altura máxima */
+  overflow-y: auto; /* Adicionando rolagem vertical quando necessário */
 }
 
 /* CSS para estilizar o menu de filtro */
@@ -67,8 +69,10 @@
   <option value="">Local do evento</option>
 </select>
 
-<div id="eventosContainer" class="evento-container">
-  <!-- Os eventos serão preenchidos dinamicamente aqui -->
+<div class="eventos-scroll"> <!-- Adicionando contêiner para a lista de eventos -->
+  <div id="eventosContainer" class="evento-container">
+    <!-- Os eventos serão preenchidos dinamicamente aqui -->
+  </div>
 </div>
 
 <script>
