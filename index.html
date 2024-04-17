@@ -17,8 +17,15 @@
   cursor: pointer; /* Altera o cursor para parecer um botão */
   text-align: left; /* Alinha o texto no início */
   text-transform: capitalize; /* Transforma o texto para ter a primeira letra maiúscula e o resto em minúsculas */
-  width: 100%; /* Subtrai o tamanho do ícone da largura total */
-  justify-content: space-between; /* Adiciona espaço entre os elementos */
+  width: 100%;
+  position: relative; /* Adiciona posição relativa para o ícone */
+  justify-content: space-between;
+  align-items: center;
+}
+
+.evento-btn img{
+  height: 20px;
+  width: 20px;
 }
 
 /* CSS para estilizar o menu de filtro */
@@ -134,7 +141,7 @@ function exibirEventos(eventos) {
     btn.setAttribute("data-casa", evento[4]); // Armazena a casa no atributo data-casa
     btn.setAttribute("data-publico", evento[6]); // Armazena o público no atributo data-publico
     btn.setAttribute("data-local", evento[5]); // Armazena o público no atributo data-publico
-    
+  
     // Adiciona a imagem do ícone de seta
     const arrowIcon = document.createElement("img");
     arrowIcon.src = "https://raw.githubusercontent.com/Luanmq/eventosFEDF/main/assets/arrow.svg";
@@ -170,7 +177,7 @@ function filtrarEventos() {
         (filtroData === "" || dataInicio === filtroData) &&
         (filtroCasaEspiritica === "" || casa === filtroCasaEspiritica) &&
         (filtroLocal === "" || local === filtroLocal)) {
-        btn.style.display = "block";
+        btn.style.display = "flex";
     } else {
       btn.style.display = "none";
     }
