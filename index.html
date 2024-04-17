@@ -6,26 +6,16 @@
 <title>Eventos</title>
 <style>
 /* CSS para estilizar os dados da planilha */
-.evento-btn {
-  background-color: #e7e6e6;
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 10px;
-  font-family: 'Titillium Web', sans-serif; /* Fonte Titillium Web */
-  font-size: 16px; /* Tamanho da fonte 16 */
-  color: black; /* Cor da letra preta */
-  cursor: pointer; /* Altera o cursor para parecer um botão */
-  text-align: left; /* Alinha o texto no início */
-  text-transform: capitalize; /* Transforma o texto para ter a primeira letra maiúscula e o resto em minúsculas */
-  width: 100%;
-  position: relative; /* Adiciona posição relativa para o ícone */
-  justify-content: space-between;
-  align-items: center;
+.evento-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 20px;
 }
 
-.evento-btn img{
-  height: 20px;
-  width: 20px;
+.evento-img {
+  width: 100%;
+  height: auto;
+  cursor: pointer;
 }
 
 /* CSS para estilizar o menu de filtro */
@@ -70,7 +60,7 @@
   <option value="">Local do evento</option>
 </select>
 
-<div id="eventosContainer">
+<div id="eventosContainer" class="evento-container">
   <!-- Os eventos serão preenchidos dinamicamente aqui -->
 </div>
 
@@ -132,26 +122,16 @@ function adicionarOpcoesFiltro(filtro, opcoes) {
 function exibirEventos(eventos) {
   const eventosContainer = document.getElementById("eventosContainer");
   eventos.forEach((evento, index) => {
-    const btn = document.createElement("button");
-    btn.classList.add("evento-btn");
-    btn.textContent = evento[1]; // Texto do botão é o nome do evento
-    btn.setAttribute("data-evento", evento[1]); // Armazena o nome do evento no atributo data-evento
-    btn.setAttribute("data-data-inicio", evento[2]); // Armazena a data de início no atributo data-data-inicio
-    btn.setAttribute("data-data-fim", evento[3]); // Armazena a data de fim no atributo data-data-fim
-    btn.setAttribute("data-casa", evento[4]); // Armazena a casa no atributo data-casa
-    btn.setAttribute("data-publico", evento[6]); // Armazena o público no atributo data-publico
-    btn.setAttribute("data-local", evento[5]); // Armazena o público no atributo data-publico
-  
-    // Adiciona a imagem do ícone de seta
-    const arrowIcon = document.createElement("img");
-    arrowIcon.src = "https://raw.githubusercontent.com/Luanmq/eventosFEDF/main/assets/arrow.svg";
-    btn.appendChild(arrowIcon); // Adiciona o ícone como filho do botão
-
-    btn.addEventListener("click", function() {
-      const link = evento[7];
+    const img = document.createElement("img");
+    img.classList.add("evento-img");
+    img.src = evento[8]; // URL da imagem do evento
+    img.alt = evento[1]; // Texto alternativo da imagem é o nome do evento
+    img.setAttribute("data-link", evento[7]); // Armazena o link no atributo data-link
+    img.addEventListener("click", function() {
+      const link = this.getAttribute("data-link");
       window.open(link, "_blank"); // Redireciona para o link em uma nova aba
     });
-    eventosContainer.appendChild(btn);
+    eventosContainer.appendChild(img);
   });
 }
 
@@ -167,19 +147,19 @@ function filtrarEventos() {
   const filtroCasaEspiritica = document.getElementById("filtroCasaEspiritica").value;
   const filtroLocal = document.getElementById("filtroLocal").value;
 
-  document.querySelectorAll('.evento-btn').forEach(btn => {
-    const dataInicio = btn.getAttribute("data-data-inicio");
-    const casa = btn.getAttribute("data-casa");
-    const publico = btn.getAttribute("data-publico");
-    const local = btn.getAttribute("data-local");
+  document.querySelectorAll('.evento-img').forEach(img => {
+    const dataInicio = img.getAttribute("data-data-inicio");
+    const casa = img.getAttribute("data-casa");
+    const publico = img.getAttribute("data-publico");
+    const local = img.getAttribute("data-local");
 
     if ((filtroPublico === "" || publico === filtroPublico) &&
         (filtroData === "" || dataInicio === filtroData) &&
         (filtroCasaEspiritica === "" || casa === filtroCasaEspiritica) &&
         (filtroLocal === "" || local === filtroLocal)) {
-        btn.style.display = "flex";
+      img.style.display = "block";
     } else {
-      btn.style.display = "none";
+      img.style.display = "none";
     }
   });
 }
