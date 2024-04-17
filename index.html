@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eventos</title>
+<style>
+/* CSS para estilizar os dados da planilha */
+.evento-btn {
+  background-color: #e7e6e6;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-family: 'Titillium Web', sans-serif; /* Fonte Titillium Web */
+  font-size: 16px; /* Tamanho da fonte 16 */
+  color: black; /* Cor da letra preta */
+  cursor: pointer; /* Altera o cursor para parecer um botão */
+  text-align: left; /* Alinha o texto no início */
+  text-transform: capitalize; /* Transforma o texto para ter a primeira letra maiúscula e o resto em minúsculas */
+  width: 100%;
+}
+
+/* CSS para estilizar o menu de filtro */
+.filtro {
+  margin-bottom: 20px; /* Aumentando a distância entre os menus */
+  font-family: 'Titillium Web', sans-serif; /* Fonte Titillium Web */
+  font-size: 16px; /* Tamanho da fonte 16 */
+  color: black; /* Cor do texto preto */
+  background-color: #f2722a; /* Cor de fundo do menu */
+  border: none; /* Removendo a borda */
+  border-radius: 5px; /* Adicionando bordas arredondadas */
+  padding: 10px; /* Aumentando o preenchimento interno */
+  
+  margin-bottom: 20px; /* Aumentando a margem inferior */
+  margin-right: 20px; /* Aumentando a margem direita */
+}
+.filtro option {
+  color: black; /* Cor do texto preto */
+}
+
+</style>
+</head>
+<body>
+
+<!-- Menu de filtro por tipo de evento -->
+<select id="filtroPublico" class="filtro">
+  <option value="">Público do evento</option>
+</select>
+
+<!-- Menu de filtro por data do evento -->
+<select id="filtroData" class="filtro">
+  <option value="">Data do evento</option>
+</select>
+
+<!-- Menu de filtro por casa espírita responsável -->
+<select id="filtroCasaEspiritica" class="filtro">
+  <option value="">Casa espírita responsável</option>
+</select>
+
+<!-- Menu de filtro por local -->
+<select id="filtroLocal" class="filtro">
+  <option value="">Local do evento</option>
+</select>
+
+<div id="eventosContainer">
+  <!-- Os eventos serão preenchidos dinamicamente aqui -->
+</div>
+
+<script>
+// URL do arquivo CSV contendo os dados dos eventos
+const csvUrl = 'https://raw.githubusercontent.com/Luanmq/eventosFEDF/main/Cadastro%20de%20eventos%20-%20Respostas%20ao%20formulário%201.csv';
+
+// Função para carregar e processar o arquivo CSV
+async function carregarEventos() {
+  const response = await fetch(csvUrl);
+  const data = await response.text();
+  const linhas = data.split('\n').map(line => line.split(','));
+
+  // Remover a última linha se estiver vazia
+  if (linhas[linhas.length - 1].every(cell => cell === "")) {
+    linhas.pop();
+  }
+
+  const eventos = linhas.slice(1); // Ignorar a primeira linha (cabeçalho)
+
+  exibirEventos(eventos);
+  preencherMenusFiltro(eventos);
+  filtrarEventos(); // Chama a função para mostrar todos os eventos
+}
+
+function preencherMenusFiltro(eventos) {
+  const filtroPublico = document.getElementById("filtroPublico");
+  const filtroData = document.getElementById("filtroData");
+  const filtroCasaEspiritica = document.getElementById("filtroCasaEspiritica");
+  const filtroLocal = document.getElementById("filtroLocal");
+
+  const publicoSet = new Set();
+  const datasSet = new Set();
+  const casasSet = new Set();
+  const locaisSet = new Set();
+
+  eventos.forEach(evento => {
+    publicoSet.add(evento[6]);
+    datasSet.add(evento[2]);
+    casasSet.add(evento[4]);
+    locaisSet.add(evento[5]);
+  });
+
+  adicionarOpcoesFiltro(filtroPublico, publicoSet);
+  adicionarOpcoesFiltro(filtroData, datasSet);
+  adicionarOpcoesFiltro(filtroCasaEspiritica, casasSet);
+  adicionarOpcoesFiltro(filtroLocal, locaisSet);
+}
+
+function adicionarOpcoesFiltro(filtro, opcoes) {
+  opcoes.forEach(opcao => {
+    const option = document.createElement("option");
+    option.value = opcao;
+    option.textContent = opcao;
+    filtro.appendChild(option);
+  });
+}
+
+function exibirEventos(eventos) {
+  const eventosContainer = document.getElementById("eventosContainer");
+  eventos.forEach((evento, index) => {
+    const btn = document.createElement("button");
+    btn.classList.add("evento-btn");
+    btn.textContent = evento[1]; // Texto do botão é o nome do evento
+    btn.setAttribute("data-evento", evento[1]); // Armazena o nome do evento no atributo data-evento
+    btn.setAttribute("data-data-inicio", evento[2]); // Armazena a data de início no atributo data-data-inicio
+    btn.setAttribute("data-data-fim", evento[3]); // Armazena a data de fim no atributo data-data-fim
+    btn.setAttribute("data-casa", evento[4]); // Armazena a casa no atributo data-casa
+    btn.setAttribute("data-publico", evento[6]); // Armazena o público no atributo data-publico
+    btn.setAttribute("data-local", evento[5]); // Armazena o público no atributo data-publico
+
+    btn.addEventListener("click", function() {
+      const link = evento[7];
+      window.open(link, "_blank"); // Redireciona para o link em uma nova aba
+    });
+    eventosContainer.appendChild(btn);
+  });
+}
+
+document.querySelectorAll('.filtro').forEach(filtro => {
+  filtro.addEventListener('change', function() {
+    filtrarEventos();
+  });
+});
+
+function filtrarEventos() {
+  const filtroPublico = document.getElementById("filtroPublico").value;
+  const filtroData = document.getElementById("filtroData").value;
+  const filtroCasaEspiritica = document.getElementById("filtroCasaEspiritica").value;
+  const filtroLocal = document.getElementById("filtroLocal").value;
+
+  document.querySelectorAll('.evento-btn').forEach(btn => {
+    const dataInicio = btn.getAttribute("data-data-inicio");
+    const casa = btn.getAttribute("data-casa");
+    const publico = btn.getAttribute("data-publico");
+    const local = btn.getAttribute("data-local");
+
+    if ((filtroPublico === "" || publico === filtroPublico) &&
+        (filtroData === "" || dataInicio === filtroData) &&
+        (filtroCasaEspiritica === "" || casa === filtroCasaEspiritica) &&
+        (filtroLocal === "" || local === filtroLocal)) {
+        btn.style.display = "block";
+    } else {
+      btn.style.display = "none";
+    }
+  });
+}
+
+window.onload = carregarEventos;
+</script>
+</body>
+</html>
