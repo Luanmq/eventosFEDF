@@ -19,6 +19,12 @@
   cursor: pointer;
 }
 
+.evento-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
 /* CSS para estilizar o menu de filtro */
 .filtro {
   margin-bottom: 20px; /* Aumentando a distância entre os menus */
@@ -130,6 +136,12 @@ function exibirEventos(eventos) {
     img.classList.add("evento-img");
     img.src = evento[8]; // URL da imagem
     img.alt = evento[1]; // Alt da imagem
+    img.setAttribute("data-data-inicio", evento[2]);
+    img.setAttribute("data-data-fim", evento[3]);
+    img.setAttribute("data-casa", evento[4]);
+    img.setAttribute("data-publico", evento[6]);
+    img.setAttribute("data-local", evento[5]);
+
     img.addEventListener("click", function() {
       const link = evento[7];
       window.open(link, "_blank"); // Redireciona para o link em uma nova aba ao clicar na imagem
@@ -152,19 +164,21 @@ function filtrarEventos() {
   const filtroCasaEspiritica = document.getElementById("filtroCasaEspiritica").value;
   const filtroLocal = document.getElementById("filtroLocal").value;
 
-  document.querySelectorAll('.evento-img').forEach(img => {
+  document.querySelectorAll('.evento-item').forEach(eventoItem => {
+    const img = eventoItem.querySelector('.evento-img');
     const dataInicio = img.getAttribute("data-data-inicio");
+    const dataFim = img.getAttribute("data-data-fim");
     const casa = img.getAttribute("data-casa");
     const publico = img.getAttribute("data-publico");
     const local = img.getAttribute("data-local");
 
     if ((filtroPublico === "" || publico === filtroPublico) &&
-        (filtroData === "" || dataInicio === filtroData) &&
+        (filtroData === "" || (filtroData >= dataInicio && filtroData <= dataFim)) &&
         (filtroCasaEspiritica === "" || casa === filtroCasaEspiritica) &&
         (filtroLocal === "" || local === filtroLocal)) {
-      img.style.display = "block";
+      eventoItem.style.display = "block";
     } else {
-      img.style.display = "none";
+      eventoItem.style.display = "none";
     }
   });
 }
