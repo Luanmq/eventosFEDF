@@ -124,7 +124,7 @@ function exibirEventos(eventos) {
   eventos.forEach((evento, index) => {
     const img = document.createElement("img");
     img.classList.add("evento-img");
-    img.src = evento[0]; // URL da imagem do evento
+    img.src = evento[8]; // URL da imagem do evento
     img.alt = evento[1]; // Texto alternativo da imagem é o nome do evento
     img.setAttribute("data-link", evento[7]); // Armazena o link no atributo data-link
     img.addEventListener("click", function() {
