@@ -6,12 +6,13 @@
 <title>Eventos</title>
 <style>
 /* CSS para estilizar os dados da planilha */
-.evento-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  grid-gap: 20px;
+.evento-item {
+  width: calc(33.33% - 20px); /* 33.33% de largura para cada coluna com uma margem de 10px entre elas */
+  margin: 10px;
+  display: inline-block;
+  vertical-align: top;
+  position: relative;
 }
-
 .evento-img {
   width: 100%;
   height: auto;
@@ -122,16 +123,20 @@ function adicionarOpcoesFiltro(filtro, opcoes) {
 function exibirEventos(eventos) {
   const eventosContainer = document.getElementById("eventosContainer");
   eventos.forEach((evento, index) => {
+    const eventoItem = document.createElement("div");
+    eventoItem.classList.add("evento-item");
+
     const img = document.createElement("img");
     img.classList.add("evento-img");
-    img.src = evento[8]; // URL da imagem do evento
-    img.alt = evento[1]; // Texto alternativo da imagem é o nome do evento
-    img.setAttribute("data-link", evento[7]); // Armazena o link no atributo data-link
+    img.src = evento[8]; // URL da imagem
+    img.alt = evento[1]; // Alt da imagem
     img.addEventListener("click", function() {
-      const link = this.getAttribute("data-link");
-      window.open(link, "_blank"); // Redireciona para o link em uma nova aba
+      const link = evento[7];
+      window.open(link, "_blank"); // Redireciona para o link em uma nova aba ao clicar na imagem
     });
-    eventosContainer.appendChild(img);
+
+    eventoItem.appendChild(img);
+    eventosContainer.appendChild(eventoItem);
   });
 }
 
